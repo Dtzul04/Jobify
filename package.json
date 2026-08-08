@@ -19,7 +19,9 @@
     "typescript": "^7.0.2"
   },
   "dependencies": {
+    "@google/genai": "^2.16.0",
     "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1"
   }
 }
