@@ -17,8 +17,8 @@ Single-page AI-powered job finder. Pulls real listings from JSearch and uses Goo
 
 ```
 jobify/
-├── src/
-│   ├── client/          
+|── client/ 
+├── src/         
 │   └── server/          
 ├── public/
 ├── dist/                
