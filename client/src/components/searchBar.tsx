@@ -1,11 +1,15 @@
 import { useState } from 'react';
 
-export default function SearchBar() {
+type SearchBarProps = {
+    onSearch: (query: string) => void;
+}
+
+export default function SearchBar(props: SearchBarProps) {
     const [search, setSearch] = useState<string>('');
 
     function handleSearch(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        console.log(search);
+        props.onSearch(search);
     }
 
     return (

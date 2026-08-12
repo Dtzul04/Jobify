@@ -1,15 +1,7 @@
 import JobCard from "./JobCard";
+import type { Job } from "../types";
 
-type JobListProps = {
-    jobs: {
-        id: number;
-        title: string;
-        company: string;
-        location: string;
-        employmentType: string;
-        applyUrl: string;
-    }[];
-}
+type JobListProps = { jobs: Job[] };
 
 export default function JobList({ jobs }: JobListProps) {
     if (jobs.length === 0) {
