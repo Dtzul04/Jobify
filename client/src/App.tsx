@@ -1,7 +1,5 @@
 import Header from "./components/Header";
-import SearchBar from "./components/searchBar";
 import JobList from "./components/JobList";
-import FilterPanel from "./components/FilterPanel";
 import { useState } from "react";
 import type { Job } from "./types";
 import { searchJobs } from "./api";
@@ -17,12 +15,12 @@ export default function App() {
     }
     
     return (
-        <main>
-        <Header />
-
-        <SearchBar onSearch={onSearch} />
-
-        <FilterPanel value={employmentType} onChange={setEmploymentType} />        
+        <main className="bg-emerald-100 flex flex-col gap-4"> 
+        <Header
+            onSearch={onSearch}
+            employmentType={employmentType}
+            onEmploymentTypeChange={setEmploymentType}
+        />      
 
         {/* We pass the jobs array to the JobList component */}
         <JobList jobs={jobs} />
