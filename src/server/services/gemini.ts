@@ -7,15 +7,24 @@ export const analyzeJob = async (title: string, description: string): Promise<AI
     });
 
     // Prompt for the AI to analyze the job posting and return the summary, key skills, and salary range
-    const prompt = `Analyze this job posting and respond with ONLY valid JSON (no markdown):
-    {
-      "summary": "2-3 sentence summary",
-      "keySkills": ["skill1", "skill2"],
-      "salaryRange": "optional string or omit"
-    }
-    Title: ${title}
-    Description: ${description}
-    `;
+    const prompt = `Rewrite this job posting in plain language a tired job seeker can understand.
+
+        Rules for summary:
+        - Exactly 2 short sentences
+        - No jargon, buzzwords, or marketing filler (no "fast-paced", "rockstar", "synergy", "self-starter")
+        - Say what the job is, who it is for, and what you would actually do day to day
+        - Do not copy sentences from the original posting
+
+        Respond with ONLY valid JSON (no markdown, no extra text):
+        {
+        "summary": "two short plain-language sentences",
+        "keySkills": ["3 to 6 everyday skill names"],
+        "salaryRange": "plain salary if clearly stated, otherwise omit"
+        }
+
+        Title: ${title}
+        Description: ${description}
+        `;
 
     // Generate content using the Gemini API
     const response = await ai.models.generateContent({

@@ -9,9 +9,9 @@ type HeaderProps = {
 
 export default function Header({ onSearch, employmentType, onEmploymentTypeChange }: HeaderProps) {
     return (
-        <header className="flex items-center gap-20 px-20 pr-45 py-8 text-slate-900">
+        <header className="flex items-center gap-20 px-18 pr-45 py-10 text-slate-900">
             <div className= "min-w-0">
-                <h1 className="text-6xl font-bold">Jobify</h1>
+                <h1 className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-blue-600 to-emerald-600">Jobify</h1>
                 <p className="mt-1 text-2xl text-slate-600">
                     Searching jobs with a simple search
                 </p>
