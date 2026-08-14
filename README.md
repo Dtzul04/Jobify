@@ -4,6 +4,15 @@ Job search UI that pulls live listings from JSearch. Search by role and city, fi
 
 Gemini is wired on the server (`POST /api/analyze`) but the cards currently show a clamped JSearch description, not an auto-summary.
 
+## Live
+
+| | URL |
+|---|---|
+| App | [jobify-jade.vercel.app](https://jobify-jade.vercel.app) |
+| API | [Render](https://jobify.onrender.com) |
+
+If the API link 404s, replace it with the URL from your Render dashboard.
+
 ## Stack
 
 | Layer | Tech |
@@ -13,7 +22,7 @@ Gemini is wired on the server (`POST /api/analyze`) but the cards currently show
 | Jobs data | JSearch API (RapidAPI) |
 | AI | Google Gemini API (analyze route; optional) |
 | Database | None |
-| Deploy (planned) | Vercel (frontend) + Render (backend) |
+| Deploy | [Vercel](https://jobify-jade.vercel.app) (frontend) + [Render](https://jobify.onrender.com) (backend) |
 
 ## Project structure
 
