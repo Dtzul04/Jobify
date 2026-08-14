@@ -11,10 +11,10 @@ export default function FilterPanel({ value, onChange }: FilterPanelProps) {
             className="rounded-lg bg-white px-3 py-2 shadow-sm"
         >
             <option value="all">All</option>
-            <option value="full-time">Full-time</option>
-            <option value="part-time">Part-time</option>
-            <option value="contract">Contract</option>
-            <option value="internship">Internship</option>
+            <option value="Full-time">Full-time</option>
+            <option value="Part-Time">Part-time</option>
+            <option value="Contractor">Contract</option>
+            <option value="Internship">Internship</option>
         </select>
     )
 }

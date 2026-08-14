@@ -21,13 +21,14 @@ app.use(express.json());
 // Search for jobs
 app.get('/api/jobs', async (req: Request, res: Response) => {
     const query = typeof req.query.query === 'string' ? req.query.query : undefined;
+    const employmentType = typeof req.query.employmentType === 'string' ? req.query.employmentType : 'all';
 
     if (!query) {
         return res.status(400).json({ error: 'Query is required' });
     }
 
     try {
-        const jobs = await jsearch(query);
+        const jobs = await jsearch(query, employmentType);
         return res.json(jobs);
     } catch (error) {
         console.error('Error searching for jobs:', error);

@@ -1,16 +1,30 @@
 import type { Job } from '../types/index.js';
 
 // Search fro jobs using the JSearch API
-export const jsearch = async (query: string): Promise<Job[]> => {
-    const response = await fetch(
-        `https://jsearch.p.rapidapi.com/search-v2?query=${encodeURIComponent(query)}&page=1&num_pages=1&country=us`,
-        {
-            headers: {
-                'X-RapidAPI-Key': process.env.JSEARCH_API_KEY ?? '',
-                'X-RapidAPI-Host': 'jsearch.p.rapidapi.com',
-            },
-        }
-    );
+export const jsearch = async (query: string, employmentType: string = 'all'): Promise<Job[]> => {
+    // Map the employment type to the API type
+    const typeMap: Record<string, string> = {
+        'Full-time': 'FULLTIME',
+        'Part-Time': 'PARTTIME',
+        'Contractor': 'CONTRACTOR',
+        'Internship': 'INTERN',
+    };
+    const apiType = typeMap[employmentType];
+
+    // Build the URL for the API request
+    let url = `https://jsearch.p.rapidapi.com/search-v2?query=${encodeURIComponent(query)}&page=1&num_pages=1&country=us`;
+
+    if (apiType) {
+        url += `&employment_types=${apiType}`;
+    }
+
+    // Make the API request
+    const response = await fetch(url, {
+        headers: {
+            'X-RapidAPI-Key': process.env.JSEARCH_API_KEY ?? '',
+            'X-RapidAPI-Host': 'jsearch.p.rapidapi.com',
+        },
+    });
 
     if (!response.ok) {
         const body = await response.text();
@@ -30,5 +44,3 @@ export const jsearch = async (query: string): Promise<Job[]> => {
         applyUrl: job.job_apply_link,
     }));
 };
-
-

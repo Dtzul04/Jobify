@@ -1,7 +1,7 @@
 import type { Job, AIAnalysis } from '../types';
 // Search for jobs
-export const searchJobs = async (query: string): Promise<Job[]> => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/jobs?query=${encodeURIComponent(query)}`, {
+export const searchJobs = async (query: string, employmentType: string): Promise<Job[]> => {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/jobs?query=${encodeURIComponent(query)}&employmentType=${encodeURIComponent(employmentType)}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
