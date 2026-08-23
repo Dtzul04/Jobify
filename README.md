@@ -116,6 +116,10 @@ There is no salary filter. JSearch often leaves salary empty.
 | `GET` | `/api/jobs?query=...&employmentType=...` | JSearch listings. `employmentType` of `all` skips the type filter. |
 | `POST` | `/api/analyze` | Gemini summary. Body: `{ title, description }`. |
 
+## CI
+
+On every push and pull request to `main`, GitHub Actions installs dependencies and builds the API and the client (`tsc` + Vite). It does not call JSearch or Gemini.
+
 ## Scripts
 
 **Root (API)**
