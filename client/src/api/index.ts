@@ -1,18 +1,20 @@
 import type { Job, AIAnalysis } from '../types';
-// Search for jobs
-export const searchJobs = async (query: string, employmentType: string): Promise<Job[]> => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/jobs?query=${encodeURIComponent(query)}&employmentType=${encodeURIComponent(employmentType)}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
-    // Check if the response is ok
-    const data = await response.json();
-    return data as Job[];
+
+// Ignore errors — Render may still be asleep; search will retry
+export function wakeApi() {
+    fetch(`${import.meta.env.VITE_API_URL}/api/health`).catch(() => {});
 }
 
-// Analyze a job
+export const searchJobs = async (query: string, employmentType: string): Promise<Job[]> => {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/jobs?query=${encodeURIComponent(query)}&employmentType=${encodeURIComponent(employmentType)}`);
+
+    if (!response.ok) {
+        throw new Error('Failed to search jobs');
+    }
+
+    return response.json() as Promise<Job[]>;
+}
+
 export const analyzeJob = async (title: string, description: string): Promise<AIAnalysis> => {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/api/analyze`, {
         method: 'POST',
@@ -21,9 +23,10 @@ export const analyzeJob = async (title: string, description: string): Promise<AI
         },
         body: JSON.stringify({ title, description }),
     });
-    // Check if the response is ok
-    const data = await response.json();
-    return data as AIAnalysis;
+
+    if (!response.ok) {
+        throw new Error('Failed to analyze job');
+    }
+
+    return response.json() as Promise<AIAnalysis>;
 }
-
-

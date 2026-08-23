@@ -1,17 +1,15 @@
 # Jobify
 
-Job search UI that pulls live listings from JSearch. Search by role and city, filter by employment type, and browse results as cards.
-
-Gemini is wired on the server (`POST /api/analyze`) but the cards currently show a clamped JSearch description, not an auto-summary.
+Search live jobs by role and city, filter by employment type, and click a card for a plain-English Gemini summary. Apply opens the listing in a new tab.
 
 ## Live
 
 | | URL |
 |---|---|
 | App | [jobify-jade.vercel.app](https://jobify-jade.vercel.app) |
-| API | [Render](https://jobify.onrender.com) |
+| API | [jobify.onrender.com](https://jobify.onrender.com) |
 
-If the API link 404s, replace it with the URL from your Render dashboard.
+The API is on Render’s free plan. It sleeps when idle, so the **first search can take about a minute**. Opening the app pings `GET /api/health` to start waking the server.
 
 ## Stack
 
@@ -19,25 +17,37 @@ If the API link 404s, replace it with the URL from your Render dashboard.
 |---|---|
 | Frontend | React + TypeScript + Tailwind CSS (Vite) |
 | Backend | Node.js + Express + TypeScript |
-| Jobs data | JSearch API (RapidAPI) |
-| AI | Google Gemini API (analyze route; optional) |
+| Jobs | JSearch (RapidAPI) |
+| AI | Google Gemini (one job per card click) |
 | Database | None |
-| Deploy | [Vercel](https://jobify-jade.vercel.app) (frontend) + [Render](https://jobify.onrender.com) (backend) |
+| Deploy | Vercel (frontend) + Render (API) |
+
+## How a search works
+
+```
+SearchBar → Header → App → GET /api/jobs → jsearch → JobList
+```
+
+- Role + city become one query string (`developer in Miami`).
+- Employment type is a separate query param (`FULLTIME`, `PARTTIME`, `CONTRACTOR`, `INTERN`, or `all`).
+- Click a card (not Apply) for `POST /api/analyze`.
 
 ## Project structure
 
 ```
 jobify/
-├── client/                 # Vite React app
+├── client/                      # Vite React app (Vercel)
 │   └── src/
-│       ├── api/
+│       ├── api/                 # fetch + wakeApi
 │       ├── components/
-│       └── types/
-├── src/server/             # Express API
-│   └── services/           # jsearch.ts, gemini.ts
+│       └── types/               # re-exports server Job types
+├── src/server/                  # Express API (Render)
+│   ├── index.ts                 # env, middleware, /api/health
+│   ├── routes/                  # jobs.ts, analyze.ts
+│   ├── services/                # jsearch.ts, gemini.ts
+│   └── types/                   # Job, JSearchJob, EmploymentType
 ├── .env.example
-├── package.json            # backend
-└── README.md
+└── package.json                 # API scripts
 ```
 
 ## Getting started
@@ -46,7 +56,7 @@ jobify/
 
 - Node.js
 - A [JSearch](https://rapidapi.com/letscrape-6bRBa3QguO5/api/jsearch) RapidAPI key
-- Optional: a Google Gemini key (only for `/api/analyze`)
+- A Google Gemini key (for card summaries)
 
 ### Backend
 
@@ -59,7 +69,6 @@ Copy `.env.example` to `.env` in the project root:
 ```env
 JSEARCH_API_KEY=your_jsearch_key
 GEMINI_API_KEY=your_gemini_key
-FRONTEND_URL=http://localhost:5173
 PORT=3001
 ```
 
@@ -77,7 +86,7 @@ cd client
 npm install
 ```
 
-Create `client/.env` with:
+Create `client/.env`:
 
 ```env
 VITE_API_URL=http://localhost:3001
@@ -91,19 +100,21 @@ App: `http://localhost:5173`.
 
 ## What you can do in the UI
 
-- Search by **role** and **city** (city is appended as `role in city` for JSearch)
-- Choose **employment type** (All, Full-time, Part-time, Contract, Internship) and click Search — the API sends JSearch `employment_types` (`FULLTIME`, etc.)
-- Loading spinner, empty copy, and a results panel under the header
-- Open **Apply** on a card (new tab)
+- Search by **role** and **city**
+- Filter **employment type**, then Search
+- Loading, failed (server asleep), and empty states
+- Click a **card** for a Gemini summary (skills + salary if the model finds one)
+- **Apply** opens the job without starting a summary
 
-Salary on listings is often missing from JSearch, so there is no salary filter yet.
+There is no salary filter. JSearch often leaves salary empty.
 
 ## API routes
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `GET` | `/api/jobs?query=...&employmentType=...` | Job listings from JSearch. `employmentType` is optional (`all` omits the JSearch type filter). |
-| `POST` | `/api/analyze` | Gemini summary (`title`, `description` in the JSON body) |
+| `GET` | `/api/health` | Wake ping. Returns `{ ok: true }`. |
+| `GET` | `/api/jobs?query=...&employmentType=...` | JSearch listings. `employmentType` of `all` skips the type filter. |
+| `POST` | `/api/analyze` | Gemini summary. Body: `{ title, description }`. |
 
 ## Scripts
 

@@ -4,12 +4,14 @@ type SearchBarProps = {
     onSearch: (query: string) => void;
 }
 
+// The search bar for the header
 export default function SearchBar(props: SearchBarProps) {
     const [search, setSearch] = useState<string>('');
     const [city, setCity] = useState<string>('');
 
     function handleSearch(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
+        // JSearch query: "nurse in Austin" when both fields are filled
         props.onSearch(city.trim() ? `${search} in ${city}` : search);
     }
 
