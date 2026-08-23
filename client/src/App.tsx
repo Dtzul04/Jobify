@@ -28,7 +28,7 @@ export default function App() {
         />      
 
         <JobList
-            jobs={employmentType === 'all' ? jobs : jobs.filter(job => job.employmentType === employmentType)}
+            jobs={jobs}
             loading={loading}
             hasSearched={hasSearched}
         />

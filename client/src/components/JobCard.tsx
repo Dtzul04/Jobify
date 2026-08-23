@@ -1,7 +1,6 @@
 import type { Job } from "../types";
 type JobCardProps = { job: Job };
 
-
 export default function JobCard({ job }: JobCardProps) {
     
     return  (

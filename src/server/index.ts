@@ -3,6 +3,20 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { jsearch } from './services/jsearch.js';
 import { analyzeJob } from './services/gemini.js';
+import type { EmploymentType } from './types/index.js';
+
+function toEmploymentType(value: string): EmploymentType {
+    switch (value) {
+        case 'all':
+        case 'FULLTIME':
+        case 'PARTTIME':
+        case 'CONTRACTOR':
+        case 'INTERN':
+            return value;
+        default:
+            return 'all';
+    }
+}
 
 // Load environment variables from .env file
 dotenv.config();
@@ -21,7 +35,8 @@ app.use(express.json());
 // Search for jobs
 app.get('/api/jobs', async (req: Request, res: Response) => {
     const query = typeof req.query.query === 'string' ? req.query.query : undefined;
-    const employmentType = typeof req.query.employmentType === 'string' ? req.query.employmentType : 'all';
+    const rawEmploymentType = typeof req.query.employmentType === 'string' ? req.query.employmentType : 'all';
+    const employmentType = toEmploymentType(rawEmploymentType);
 
     if (!query) {
         return res.status(400).json({ error: 'Query is required' });
