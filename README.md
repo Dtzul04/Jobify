@@ -1,5 +1,7 @@
 # Jobify
 
+[![CI](https://github.com/Dtzul04/Jobify/actions/workflows/ci.yml/badge.svg)](https://github.com/Dtzul04/Jobify/actions/workflows/ci.yml)
+
 Search live jobs by role and city, filter by employment type, and click a card for a plain-English Gemini summary. Apply opens the listing in a new tab.
 
 ## Live
