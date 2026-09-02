@@ -1,22 +1,41 @@
 import type { Job, AIAnalysis } from '../types';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
+function wait(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 // Ignore errors — Render may still be asleep; search will retry
 export function wakeApi() {
-    fetch(`${import.meta.env.VITE_API_URL}/api/health`).catch(() => {});
+    fetch(`${API_URL}/api/health`).catch(() => {});
 }
 
 export const searchJobs = async (query: string, employmentType: string): Promise<Job[]> => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/jobs?query=${encodeURIComponent(query)}&employmentType=${encodeURIComponent(employmentType)}`);
+    const url = `${API_URL}/api/jobs?query=${encodeURIComponent(query)}&employmentType=${encodeURIComponent(employmentType)}`;
+    let lastError: unknown;
 
-    if (!response.ok) {
-        throw new Error('Failed to search jobs');
+    // Render free tier often drops the first request while the box boots
+    for (let attempt = 1; attempt <= 5; attempt++) {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error('Failed to search jobs');
+            }
+            return (await response.json()) as Job[];
+        } catch (error) {
+            lastError = error;
+            if (attempt < 5) {
+                await wait(10000);
+            }
+        }
     }
 
-    return response.json() as Promise<Job[]>;
+    throw lastError;
 }
 
 export const analyzeJob = async (title: string, description: string): Promise<AIAnalysis> => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/analyze`, {
+    const response = await fetch(`${API_URL}/api/analyze`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
