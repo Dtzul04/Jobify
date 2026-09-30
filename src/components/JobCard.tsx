@@ -1,6 +1,8 @@
+"use client";
+
 import { useState } from "react";
-import type { AIAnalysis, Job } from "../types";
-import { analyzeJob } from "../api";
+import type { AIAnalysis, Job } from "@/types";
+import { analyzeJob } from "@/lib/fetchJobs";
 
 type JobCardProps = { job: Job };
 

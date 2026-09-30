@@ -1,5 +1,5 @@
 import JobCard from "./JobCard";
-import type { Job } from "../types";
+import type { Job } from "@/types";
 
 type JobListProps = {
     jobs: Job[];

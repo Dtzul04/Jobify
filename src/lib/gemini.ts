@@ -1,4 +1,4 @@
-import type { AIAnalysis } from '../types/index.js';
+import type { AIAnalysis } from '@/types';
 import { GoogleGenAI } from "@google/genai";
 
 export const analyzeJob = async (title: string, description: string): Promise<AIAnalysis> => {

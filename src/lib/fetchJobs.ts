@@ -1,18 +1,11 @@
-import type { Job, AIAnalysis } from '../types';
-
-const API_URL = import.meta.env.VITE_API_URL;
+import type { Job, AIAnalysis } from '@/types';
 
 function wait(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// Ignore errors — Render may still be asleep; search will retry
-export function wakeApi() {
-    fetch(`${API_URL}/api/health`).catch(() => {});
-}
-
 export const searchJobs = async (query: string, employmentType: string): Promise<Job[]> => {
-    const url = `${API_URL}/api/jobs?query=${encodeURIComponent(query)}&employmentType=${encodeURIComponent(employmentType)}`;
+    const url = `/api/jobs?query=${encodeURIComponent(query)}&employmentType=${encodeURIComponent(employmentType)}`;
     let lastError: unknown;
 
     // Render free tier often drops the first request while the box boots
@@ -35,7 +28,7 @@ export const searchJobs = async (query: string, employmentType: string): Promise
 }
 
 export const analyzeJob = async (title: string, description: string): Promise<AIAnalysis> => {
-    const response = await fetch(`${API_URL}/api/analyze`, {
+    const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
