@@ -16,19 +16,9 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: |
-            package-lock.json
-            client/package-lock.json
 
-      - name: Install and build API
+      - name: Install, lint and build
         run: |
           npm ci
-          npm run build
-
-      - name: Install and build client
-        working-directory: client
-        env:
-          VITE_API_URL: http://localhost:3001
-        run: |
-          npm ci
+          npm run lint
           npm run build
