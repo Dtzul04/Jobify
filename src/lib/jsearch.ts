@@ -1,4 +1,4 @@
-import type { JSearchJob, EmploymentType, Job } from '../types/index.js';
+import type { JSearchJob, EmploymentType, Job } from '@/types';
 
 export async function jsearch(query: string, employmentType: EmploymentType): Promise<Job[]> {
     let url = `https://jsearch.p.rapidapi.com/search-v2?query=${encodeURIComponent(query)}&page=1&num_pages=1&country=us`;
