@@ -25,10 +25,18 @@ export const analyzeJob = async (title: string, description: string): Promise<AI
         Description: ${description}
         `;
 
-    const response = await ai.models.generateContent({
-        model: "gemini-3.6-flash",
-        contents: prompt,
-    });
+    // Gemini has not built-in timeout and we have race the API call against a timer.
+    const GEMINI_TIMEOUT_MS = 30_000;
+
+    const response = await Promise.race([
+        ai.models.generateContent({
+            model: "gemini-3.6-flash",
+            contents: prompt,
+        }),
+        new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error('Gemini request timed out')), GEMINI_TIMEOUT_MS)
+        ),
+    ])
 
     const text = response.text ?? '';
     const cleaned = text.replace(/```json\n|```/g, '').trim();
