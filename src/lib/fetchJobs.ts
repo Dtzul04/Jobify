@@ -1,9 +1,5 @@
 import type { Job, AIAnalysis } from '@/types';
 
-function wait(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 export const searchJobs = async (query: string, employmentType: string): Promise<Job[]> => {
     const url = `/api/jobs?query=${encodeURIComponent(query)}&employmentType=${encodeURIComponent(employmentType)}`;
     const response = await fetch(url);
