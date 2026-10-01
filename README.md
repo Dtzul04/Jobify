@@ -6,28 +6,25 @@ Search live jobs by role and city, filter by employment type, and click a card f
 
 ## Live
 
-| | URL |
-|---|---|
-| App | [jobify-jade.vercel.app](https://jobify-jade.vercel.app) |
-| API | [jobify.onrender.com](https://jobify.onrender.com) |
+[jobify-jade.vercel.app](https://jobify-jade.vercel.app)
 
-The API is on Render’s free plan. It sleeps when idle, so the **first search can take about a minute**. Opening the app pings `GET /api/health` to start waking the server.
+The frontend and API run as one Next.js app on Vercel.
 
 ## Stack
 
 | Layer | Tech |
 |---|---|
-| Frontend | React + TypeScript + Tailwind CSS (Vite) |
-| Backend | Node.js + Express + TypeScript |
+| Framework | Next.js (App Router) + TypeScript |
+| Styling | Tailwind CSS |
+| API | Next.js route handlers (`src/app/api`) |
 | Jobs | JSearch (RapidAPI) |
 | AI | Google Gemini (one job per card click) |
-| Database | None |
-| Deploy | Vercel (frontend) + Render (API) |
+| Deploy | Vercel |
 
 ## How a search works
 
 ```
-SearchBar → Header → App → GET /api/jobs → jsearch → JobList
+SearchBar → Header → page.tsx → GET /api/jobs → jsearch → JobList
 ```
 
 - Role + city become one query string (`developer in Miami`).
@@ -38,73 +35,58 @@ SearchBar → Header → App → GET /api/jobs → jsearch → JobList
 
 ```
 jobify/
-├── client/                      # Vite React app (Vercel)
-│   └── src/
-│       ├── api/                 # fetch + wakeApi
-│       ├── components/
-│       └── types/               # re-exports server Job types
-├── src/server/                  # Express API (Render)
-│   ├── index.ts                 # env, middleware, /api/health
-│   ├── routes/                  # jobs.ts, analyze.ts
-│   ├── services/                # jsearch.ts, gemini.ts
-│   └── types/                   # Job, JSearchJob, EmploymentType
+├── src/
+│   ├── app/
+│   │   ├── page.tsx             # Home page: search state + results
+│   │   ├── layout.tsx           # Root layout, Poppins font, metadata
+│   │   ├── globals.css          # Tailwind import
+│   │   └── api/
+│   │       ├── jobs/route.ts    # GET /api/jobs
+│   │       └── analyze/route.ts # POST /api/analyze
+│   ├── components/              # Header, SearchBar, FilterPanel, JobCard, JobList
+│   ├── lib/
+│   │   ├── fetchJobs.ts         # Browser fetch helpers for /api/*
+│   │   ├── jsearch.ts           # JSearch API call (server only)
+│   │   └── gemini.ts            # Gemini API call (server only)
+│   └── types/                   # Job, JSearchJob, AIAnalysis, EmploymentType
 ├── .env.example
-└── package.json                 # API scripts
+└── package.json
 ```
 
 ## Getting started
 
 ### Prerequisites
 
-- Node.js
+- Node.js 20.9 or newer
 - A [JSearch](https://rapidapi.com/letscrape-6bRBa3QguO5/api/jsearch) RapidAPI key
 - A Google Gemini key (for card summaries)
 
-### Backend
+### Setup
 
 ```bash
 npm install
 ```
 
-Copy `.env.example` to `.env` in the project root:
+Copy `.env.example` to `.env.local` in the project root:
 
 ```env
 JSEARCH_API_KEY=your_jsearch_key
 GEMINI_API_KEY=your_gemini_key
-PORT=3001
-```
-
-```bash
-npm run build
-npm start
-```
-
-API: `http://localhost:3001`. Rebuild after TypeScript changes (`npm run build` then `npm start`).
-
-### Frontend
-
-```bash
-cd client
-npm install
-```
-
-Create `client/.env`:
-
-```env
-VITE_API_URL=http://localhost:3001
 ```
 
 ```bash
 npm run dev
 ```
 
-App: `http://localhost:5173`.
+App and API: `http://localhost:3000`.
+
+The keys are only read on the server, so they never reach the browser.
 
 ## What you can do in the UI
 
 - Search by **role** and **city**
 - Filter **employment type**, then Search
-- Loading, failed (server asleep), and empty states
+- Loading, failed, and empty states
 - Click a **card** for a Gemini summary (skills + salary if the model finds one)
 - **Apply** opens the job without starting a summary
 
@@ -114,29 +96,25 @@ There is no salary filter. JSearch often leaves salary empty.
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `GET` | `/api/health` | Wake ping. Returns `{ ok: true }`. |
 | `GET` | `/api/jobs?query=...&employmentType=...` | JSearch listings. `employmentType` of `all` skips the type filter. |
 | `POST` | `/api/analyze` | Gemini summary. Body: `{ title, description }`. |
 
+## Deploy
+
+Vercel builds from `main`. In the Vercel project settings, set the Framework Preset to **Next.js**, leave Root Directory empty, and add `JSEARCH_API_KEY` and `GEMINI_API_KEY` under Environment Variables.
+
 ## CI
 
-On every push and pull request to `main`, GitHub Actions installs dependencies and builds the API and the client (`tsc` + Vite). It does not call JSearch or Gemini.
+On every push and pull request to `main`, GitHub Actions installs dependencies, runs ESLint, and runs a production build. It does not call JSearch or Gemini.
 
 ## Scripts
 
-**Root (API)**
-
 | Script | What it does |
 |---|---|
-| `npm run build` | Compile TypeScript → `dist/` |
-| `npm start` | Run the compiled server |
-
-**`client/`**
-
-| Script | What it does |
-|---|---|
-| `npm run dev` | Vite dev server |
-| `npm run build` | Production frontend build |
+| `npm run dev` | Next.js dev server |
+| `npm run build` | Production build |
+| `npm start` | Run the production build |
+| `npm run lint` | ESLint |
 
 ## License
 
