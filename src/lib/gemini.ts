@@ -1,11 +1,13 @@
 import type { AIAnalysis } from '@/types';
 import { GoogleGenAI } from "@google/genai";
 
+// Called from POST /api/analyze with one job's title + description
 export const analyzeJob = async (title: string, description: string): Promise<AIAnalysis> => {
     const ai = new GoogleGenAI({
         apiKey: process.env.GEMINI_API_KEY ?? '',
     });
 
+    // We ask for JSON in prompt; the model still sometimes wraps it in a markdown
     const prompt = `Rewrite this job posting in plain language a tired job seeker can understand.
 
         Rules for summary:
@@ -25,7 +27,7 @@ export const analyzeJob = async (title: string, description: string): Promise<AI
         Description: ${description}
         `;
 
-    // Gemini has not built-in timeout and we have race the API call against a timer.
+    // No built-in timeout on the SDK so we race Gemini against the 30s timer.
     const GEMINI_TIMEOUT_MS = 30_000;
 
     const response = await Promise.race([
@@ -36,15 +38,29 @@ export const analyzeJob = async (title: string, description: string): Promise<AI
         new Promise<never>((_, reject) =>
             setTimeout(() => reject(new Error('Gemini request timed out')), GEMINI_TIMEOUT_MS)
         ),
-    ])
+    ]);
 
+    // Turn model output into plain text, then into a JS object.
     const text = response.text ?? '';
     const cleaned = text.replace(/```json\n|```/g, '').trim();
-    const parsed = JSON.parse(cleaned || '{}');
+    
+    let parsed: Record<string, unknown>; 
+    try {
+        parsed = JSON.parse(cleaned || '{}') as Record<string, unknown>;
+    } catch {
+        throw new Error('Gemini returned invalid JSON');
+    }
 
+    // Do not trust parsed fields and Gemini can send wrong types.
+    const summary = typeof parsed.summary === 'string' ? parsed.summary : '';
+    const keySkills = Array.isArray(parsed.keySkills)
+        ? parsed.keySkills.filter((s): s is string => typeof s === 'string')
+        : [];
+    const salaryRange = typeof parsed.salaryRange === 'string' ? parsed.salaryRange : '';
+ 
     return {
-        summary: parsed.summary ?? '',
-        keySkills: parsed.keySkills ?? [],
-        salaryRange: parsed.salaryRange ?? '',
+        summary: summary ?? '',
+        keySkills: keySkills ?? [],
+        salaryRange: salaryRange || undefined,
     };
 };

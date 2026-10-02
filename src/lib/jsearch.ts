@@ -7,9 +7,9 @@ export async function jsearch(query: string, employmentType: EmploymentType): Pr
     }
 
     try {
-        // Abort if the RapidAPI takes longer thant 10s
+        // Abort if the RapidAPI takes longer thant 15s
         const response = await fetch(url, {
-            signal: AbortSignal.timeout(10_000),
+            signal: AbortSignal.timeout(15_000),
             headers: {
                 'X-RapidAPI-Key': process.env.JSEARCH_API_KEY ?? '',
                 'X-RapidAPI-Host': 'jsearch.p.rapidapi.com',

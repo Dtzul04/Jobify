@@ -30,6 +30,7 @@ SearchBar → Header → page.tsx → GET /api/jobs → jsearch → JobList
 - Role + city become one query string (`developer in Miami`).
 - Employment type is a separate query param (`FULLTIME`, `PARTTIME`, `CONTRACTOR`, `INTERN`, or `all`).
 - Click a card (not Apply) for `POST /api/analyze`.
+- Card summary: `JobCard` -> `POST /api/analyze` -> `gemin.ts` -> summary on the card.
 
 ## Project structure
 
@@ -102,6 +103,7 @@ There is no salary filter. JSearch often leaves salary empty.
 ## Deploy
 
 Vercel builds from `main`. In the Vercel project settings, set the Framework Preset to **Next.js**, leave Root Directory empty, and add `JSEARCH_API_KEY` and `GEMINI_API_KEY` under Environment Variables.
+After you add or change environment variables, redeploy so production picks them up.
 
 ## CI
 
@@ -115,6 +117,10 @@ On every push and pull request to `main`, GitHub Actions installs dependencies, 
 | `npm run build` | Production build |
 | `npm start` | Run the production build |
 | `npm run lint` | ESLint |
+
+## Roadmap 
+
+
 
 ## License
 
