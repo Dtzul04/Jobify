@@ -30,7 +30,7 @@ SearchBar → Header → page.tsx → GET /api/jobs → jsearch → JobList
 - Role + city become one query string (`developer in Miami`).
 - Employment type is a separate query param (`FULLTIME`, `PARTTIME`, `CONTRACTOR`, `INTERN`, or `all`).
 - Click a card (not Apply) for `POST /api/analyze`.
-- Card summary: `JobCard` -> `POST /api/analyze` -> `gemin.ts` -> summary on the card.
+- Card summary: `JobCard` -> `POST /api/analyze` -> `gemini.ts` -> summary on the card.
 
 ## Project structure
 
@@ -120,7 +120,11 @@ On every push and pull request to `main`, GitHub Actions installs dependencies, 
 
 ## Roadmap 
 
-
+- Zod validation for `/api/jobs` and `/api/analyze`
+- Rate limit on `POST /api/analyze`
+- Tune JSearch timeouts when RapidAPI is slow
+- Unit tests (JSearch mapper, API routes)
+- Server vs Client Components in Next.js
 
 ## License
 
