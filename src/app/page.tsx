@@ -5,28 +5,20 @@ import JobList from "@/components/JobList";
 import { useState } from "react";
 import type { Job } from "@/types";
 import { searchJobs } from "@/lib/fetchJobs";
+import { useAsync } from "@/hooks/useAsync";
 
 export default function Home() {
     const [employmentType, setEmploymentType] = useState('all');
     const [jobs, setJobs] = useState<Job[]>([]);
-    const [loading, setLoading] = useState(false);
     const [hasSearched, setHasSearched] = useState(false);
-    const [failed, setFailed] = useState(false);
+    const { loading, failed, run } = useAsync();
 
     async function onSearch(query: string) {
-        setLoading(true);
         setHasSearched(true);
-        setFailed(false);
-        try {
+        setJobs([])
+        run(async () => {
             setJobs(await searchJobs(query, employmentType));
-        } catch (error) {
-            console.error(error);
-            setJobs([]);
-            setFailed(true);
-        } finally {
-            // Always stop the spinner, even if fetch throws
-            setLoading(false);
-        }
+        })
     }
 
     return (
