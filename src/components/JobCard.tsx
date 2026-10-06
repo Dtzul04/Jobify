@@ -3,13 +3,13 @@
 import { useState } from "react";
 import type { AIAnalysis, Job } from "@/types";
 import { analyzeJob } from "@/lib/fetchJobs";
+import { useAsync } from "@/hooks/useAsync";
 
 type JobCardProps = { job: Job };
 
 export default function JobCard({ job }: JobCardProps) {
-    const [analysis, setAnalysis] = useState<AIAnalysis | null>(null);
-    const [loading, setLoading] = useState(false);
-    const [failed, setFailed] = useState(false);
+    const { loading, failed, run } = useAsync();
+    const [analysis, setAnalysis] = useState<AIAnalysis| null>(null);
 
     async function onCardClick() {
         // One Gemini call per card unless the last try failed
@@ -17,19 +17,13 @@ export default function JobCard({ job }: JobCardProps) {
             return;
         }
 
-        setFailed(false);
-        setLoading(true);
-        try {
+        // useAsync tracks the loading and failure for this request
+        run(async () => {
             setAnalysis(await analyzeJob(job.title, job.description));
-        } catch (error) {
-            console.error(error);
-            setFailed(true);
-        } finally {
-            setLoading(false);
-        }
+        });
     }
 
-    // 
+    // Whole card is clickable to request a summary 
     return (
         <div
             role="button"
