@@ -1,12 +1,12 @@
 export interface JSearchJob {
-    job_id: string;
-    job_title: string;
-    job_description: string;
-    employer_name: string;
-    job_city?: string;
-    job_state?: string;
-    job_employment_type: string;
-    job_apply_link: string;
+    job_id?: string | null;
+    job_title?: string | null;
+    job_description?: string | null;
+    employer_name?: string | null;
+    job_city?: string | null;
+    job_state?: string | null;
+    job_employment_type?: string | null;
+    job_apply_link?: string | null;
 }
 
 export interface Job {
