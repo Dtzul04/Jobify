@@ -18,24 +18,24 @@ export default function SearchBar(props: SearchBarProps) {
     }
 
     return (
-        <div className="w-full rounded-lg bg-white p-4 shadow-sm">
-            <form onSubmit={handleSearch} className="flex items-center gap-2">
+        <div className="w-full rounded-lg bg-white p-3 sm:p-4 shadow-sm">
+            <form onSubmit={handleSearch} className="flex flex-col gap-2 sm:flex-row sm:items-center">
                 <input
-                    className="min-w-0 flex-1 rounded-md px-3 py-2"
+                    className="w-full min-w-0 rounded-md px-3 py-2 sm:flex-1"
                     type="text"
                     placeholder="Search for Jobs"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                 />
                 <input
-                    className="min-w-0 flex-1 rounded-md px-3 py-2"
+                    className="w-full min-w-0 rounded-md px-3 py-2 sm:flex-1"
                     type="text"
                     placeholder="Location"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                 />
                 <button
-                    className="shrink-0 bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700"
+                    className="w-full sm:w-auto shrink-0 bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700"
                     type="submit"
                 >
                     Search
