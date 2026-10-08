@@ -12,6 +12,19 @@ export async function POST(request: Request) {
         return Response.json(await analyzeJob(title, description));
     } catch (error) {
         console.error('Error analyzing job:', error);
-        return Response.json({ error: 'Internal server error' }, { status: 500 });
+
+        // Only real Error objects have .message
+        const message = error instanceof Error ? error.message : '';
+
+        // These strings must match the errors thrown in gemini.ts
+        if (message === 'Gemini request timed out') {
+            return Response.json({ error: 'Took too long to respond. Please try again.' }, { status: 504});
+        }
+
+        if (message === 'Gemini returned invalid JSON') {
+            return Response.json({ error: 'The summary came back broken. Please try again.' }, { status: 502})
+        }
+
+        return Response.json({ error: 'Something went wrong. Please try again.' }, { status: 500 });
     }
 }

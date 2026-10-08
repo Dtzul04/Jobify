@@ -8,7 +8,7 @@ import { useAsync } from "@/hooks/useAsync";
 type JobCardProps = { job: Job };
 
 export default function JobCard({ job }: JobCardProps) {
-    const { loading, failed, run } = useAsync();
+    const { loading, failed, error, run } = useAsync();
     const [analysis, setAnalysis] = useState<AIAnalysis| null>(null);
 
     async function onCardClick() {
@@ -46,21 +46,25 @@ export default function JobCard({ job }: JobCardProps) {
             <p className="text-sm text-slate-500">{job.location}</p>
             <p className="text-sm text-slate-500">{job.employmentType}</p>
             <p className="text-sm text-slate-500 line-clamp-3">{job.description || "No description at this time"}</p>
-            {job.description && !analysis && !loading && (
+            {job.description && !analysis && !loading && !failed && (
                 <p className="text-xs text-slate-400">Click the card for a plain-English summary</p>
             )}
             {job.salaryRange && <p className="font-medium">{job.salaryRange}</p>}
             {loading && <p className="text-sm text-slate-600">Summarizing...</p>}
-            {failed && <p className="text-sm text-slate-600">Could not summarize. Click to try again.</p>}
-            {analysis && (
-                <div className="rounded-md bg-white/70 p-3 text-sm text-slate-700">
-                    <p>{analysis.summary}</p>
-                    {analysis.keySkills.length > 0 && (
-                        <p className="mt-2">{analysis.keySkills.join(", ")}</p>
-                    )}
-                    {analysis.salaryRange && (
-                        <p className="mt-2 font-medium">{analysis.salaryRange}</p>
-                    )}
+            {/* Error message from the route, with a retry button */}
+            {failed && (
+                <div className="flex items-center gap-2 text-sm text-slate-600">
+                    <p>{error}</p>
+                    <button
+                        type="button"
+                        onClick={(e) => {
+                            e.stopPropagation(); // Keep the click from also hitting the card
+                            onCardClick();
+                        }}
+                        className="rounded-md bg-white px-2 py-1 hover:bg-emerald-300"
+                    >
+                        Try again
+                    </button>
                 </div>
             )}
             {/* Some jobs may come back without an apply link */}
