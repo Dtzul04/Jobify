@@ -18,8 +18,10 @@ export const analyzeJob = async (title: string, description: string): Promise<AI
         body: JSON.stringify({ title, description }),
     });
 
+    // Pass the route's user-friendly message on to JobCard
     if (!response.ok) {
-        throw new Error('Failed to analyze job');
+        const body = await response.json();
+        throw new Error(body.error ?? 'Something went wrong. Please try again.');
     }
 
     return response.json() as Promise<AIAnalysis>;
