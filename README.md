@@ -40,11 +40,15 @@ jobify/
 │   ├── app/
 │   │   ├── page.tsx             # Home page: search state + results
 │   │   ├── layout.tsx           # Root layout, Poppins font, metadata
-│   │   ├── globals.css          # Tailwind import
+│   │   ├── globals.css          # Tailwind + theme tokens (@theme)
 │   │   └── api/
 │   │       ├── jobs/route.ts    # GET /api/jobs
 │   │       └── analyze/route.ts # POST /api/analyze
-│   ├── components/              # Header, SearchBar, FilterPanel, JobCard, JobList
+│   ├── components/
+│   │   ├── ui/                  # Button, Input, Card (design system primitives)
+│   │   └── …                    # Header, SearchBar, FilterPanel, JobCard, JobList
+│   ├── hooks/
+│   │   └── useAsync.ts          # Shared loading/error state for async UI
 │   ├── lib/
 │   │   ├── fetchJobs.ts         # Browser fetch helpers for /api/*
 │   │   ├── jsearch.ts           # JSearch API call (server only)
