@@ -22,7 +22,7 @@ export default function Home() {
     }
 
     return (
-        <main className="min-h-screen bg-emerald-100 flex flex-col">
+        <main className="flex flex-1 flex-col bg-surface-muted">
             <Header
                 onSearch={onSearch}
                 employmentType={employmentType}

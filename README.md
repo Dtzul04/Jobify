@@ -15,7 +15,7 @@ The frontend and API run as one Next.js app on Vercel.
 | Layer | Tech |
 |---|---|
 | Framework | Next.js (App Router) + TypeScript |
-| Styling | Tailwind CSS |
+| Styling | Tailwind CSS v4 (theme tokens in `globals.css`) |
 | API | Next.js route handlers (`src/app/api`) |
 | Jobs | JSearch (RapidAPI) |
 | AI | Google Gemini (one job per card click) |
@@ -38,15 +38,17 @@ SearchBar → Header → page.tsx → GET /api/jobs → jsearch → JobList
 jobify/
 ├── src/
 │   ├── app/
-│   │   ├── page.tsx             # Home page: search state + results
-│   │   ├── layout.tsx           # Root layout, Poppins font, metadata
+│   │   ├── page.tsx             # Home: search state + results
+│   │   ├── about/page.tsx       # About page
+│   │   ├── layout.tsx           # Root layout, footer, Poppins font
 │   │   ├── globals.css          # Tailwind + theme tokens (@theme)
 │   │   └── api/
 │   │       ├── jobs/route.ts    # GET /api/jobs
 │   │       └── analyze/route.ts # POST /api/analyze
 │   ├── components/
-│   │   ├── ui/                  # Button, Input, Card (design system primitives)
-│   │   └── …                    # Header, SearchBar, FilterPanel, JobCard, JobList
+│   │   ├── ui/                  # Button, Input, Card
+│   │   ├── Footer.tsx
+│   │   └── Header, SearchBar, FilterPanel, JobCard, JobList
 │   ├── hooks/
 │   │   └── useAsync.ts          # Shared loading/error state for async UI
 │   ├── lib/
@@ -94,6 +96,7 @@ The keys are only read on the server, so they never reach the browser.
 - Loading, failed, and empty states
 - Click a **card** for a Gemini summary (skills + salary if the model finds one)
 - **Apply** opens the job without starting a summary
+- **About** (`/about`) and **footer** links on every page
 
 There is no salary filter. JSearch often leaves salary empty.
 

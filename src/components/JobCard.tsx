@@ -4,33 +4,30 @@ import { useState } from "react";
 import type { AIAnalysis, Job } from "@/types";
 import { analyzeJob } from "@/lib/fetchJobs";
 import { useAsync } from "@/hooks/useAsync";
+import Card from "@/components/ui/Card";
 
 type JobCardProps = { job: Job };
 
 export default function JobCard({ job }: JobCardProps) {
     const { loading, failed, error, run } = useAsync();
-    const [analysis, setAnalysis] = useState<AIAnalysis| null>(null);
+    const [analysis, setAnalysis] = useState<AIAnalysis | null>(null);
 
     async function onCardClick() {
-        // Nothing for Gemini to summarize without a description
         if (!job.description) {
             return;
         }
 
-        // One Gemini call per card unless the last try failed
         if (loading || analysis) {
             return;
         }
 
-        // useAsync tracks the loading and failure for this request
         run(async () => {
             setAnalysis(await analyzeJob(job.title, job.description));
         });
     }
 
-    // Whole card is clickable to request a summary 
     return (
-        <div
+        <Card
             role="button"
             tabIndex={0}
             onClick={onCardClick}
@@ -39,50 +36,85 @@ export default function JobCard({ job }: JobCardProps) {
                     onCardClick();
                 }
             }}
-            className="flex flex-col gap-2 h-full rounded-lg bg-emerald-100 p-6 shadow-md cursor-pointer"
+            className="flex h-full cursor-pointer flex-col gap-3 border border-emerald-200/70 p-6 shadow-md transition duration-200 hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-lg"
         >
-            <h3 className="text-xl font-bold">{job.title}</h3>
-            <h2 className="text-slate-700">{job.company}</h2>
-            <p className="text-sm text-slate-500">{job.location}</p>
-            <p className="text-sm text-slate-500">{job.employmentType}</p>
-            <p className="text-sm text-slate-500 line-clamp-3">{job.description || "No description at this time"}</p>
-            {job.description && !analysis && !loading && !failed && (
-                <p className="text-xs text-slate-400">Click the card for a plain-English summary</p>
+            <div className="space-y-1">
+                <h3 className="text-xl font-bold leading-snug text-text">{job.title}</h3>
+                <p className="text-base font-medium text-text">{job.company}</p>
+            </div>
+            <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-text-muted">
+                {job.location && <span>{job.location}</span>}
+                {job.employmentType && (
+                    <span className="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-medium">
+                        {job.employmentType}
+                    </span>
+                )}
+            </div>
+            {job.salaryRange && (
+                <p className="text-sm font-medium text-brand">{job.salaryRange}</p>
             )}
-            {job.salaryRange && <p className="font-medium">{job.salaryRange}</p>}
-            {loading && <p className="text-sm text-slate-600">Summarizing...</p>}
-            {/* Error message from the route, with a retry button */}
+            <p className="text-sm text-text-muted line-clamp-3">
+                {job.description || "No description at this time"}
+            </p>
+
+            {job.description && !analysis && !loading && !failed && (
+                <p className="text-xs text-text-muted">Click the card for a plain-English summary</p>
+            )}
+            {loading && <p className="text-sm text-text-muted">Summarizing...</p>}
+
+            {analysis && (
+                <div
+                    className="space-y-2 rounded-md border border-emerald-200/80 bg-surface-muted/80 p-3 text-sm"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <p className="font-medium text-text">Summary</p>
+                    <p className="text-text-muted">{analysis.summary}</p>
+                    {analysis.keySkills.length > 0 && (
+                        <p className="text-text-muted">
+                            <span className="font-medium text-text">Skills: </span>
+                            {analysis.keySkills.join(", ")}
+                        </p>
+                    )}
+                    {analysis.salaryRange && (
+                        <p className="text-text-muted">
+                            <span className="font-medium text-text">Salary (AI): </span>
+                            {analysis.salaryRange}
+                        </p>
+                    )}
+                </div>
+            )}
+
             {failed && (
-                <div className="flex items-center gap-2 text-sm text-slate-600">
+                <div className="flex flex-wrap items-center gap-2 text-sm text-text-muted">
                     <p>{error}</p>
                     <button
                         type="button"
                         onClick={(e) => {
-                            e.stopPropagation(); // Keep the click from also hitting the card
+                            e.stopPropagation();
                             onCardClick();
                         }}
-                        className="rounded-md bg-white px-2 py-1 hover:bg-emerald-300"
+                        className="rounded-md bg-surface-muted px-2 py-1 hover:bg-emerald-200"
                     >
                         Try again
                     </button>
                 </div>
             )}
-            {/* Some jobs may come back without an apply link */}
+
             {job.applyUrl ? (
                 <a
                     href={job.applyUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()} // Apply should not start a summary
-                    className="rounded-md bg-white mt-auto shrink-0 px-2 py-2 hover:bg-emerald-300 text-center"
+                    onClick={(e) => e.stopPropagation()}
+                    className="mt-auto shrink-0 rounded-md bg-brand px-3 py-2 text-center text-sm font-medium text-white hover:bg-brand-hover"
                 >
                     Apply
                 </a>
             ) : (
-                <p className="mt-auto shrink-0 px-2 py-2 text-center text-sm text-slate-500">
+                <p className="mt-auto shrink-0 py-2 text-center text-sm text-text-muted">
                     No link available
                 </p>
             )}
-        </div>
+        </Card>
     );
 }
