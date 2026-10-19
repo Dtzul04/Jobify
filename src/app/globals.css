@@ -1,5 +1,42 @@
 @import "tailwindcss";
 
+:root {
+    /* Brand */
+    --brand: #0d9488;
+    --brand-hover: #0f766e;
+
+    /* Surfaces */
+    --surface: #ffffff;
+    --surface-muted: #d1fae5;
+
+     /* Text */
+    --text: #0f172a; /* slate-900 */
+    --text-muted: #64748b; /* slate-500 */
+
+    /* Shape */
+    --radius-md: 0.375rem;
+    --radius-lg: 0.5rem;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    }
+
+@theme inline {
+    --color-brand: var(--brand);
+    --color-brand-hover: var(--brand-hover);
+    --color-surface: var(--surface);
+    --color-surface-muted: var(--surface-muted);
+    --color-text: var(--text);
+    --color-text-muted: var(--text-muted);
+    --radius-md: var(--radius-md);
+    --radius-lg: var(--radius-lg);
+    --shadow-sm: var(--shadow-sm);
+    --shadow-md: var(--shadow-md);
+}
+
 body {
     font-family: var(--font-poppins), sans-serif;
+    background-color: var(--surface-muted);
+    color: var(--text);
 }

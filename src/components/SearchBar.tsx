@@ -1,6 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
+import Input from "@/components/ui/Input";
 
 type SearchBarProps = {
     onSearch: (query: string) => void;
@@ -18,29 +21,24 @@ export default function SearchBar(props: SearchBarProps) {
     }
 
     return (
-        <div className="w-full rounded-lg bg-white p-3 sm:p-4 shadow-sm">
+        <Card className="w-full">
             <form onSubmit={handleSearch} className="flex flex-col gap-2 sm:flex-row sm:items-center">
-                <input
-                    className="w-full min-w-0 rounded-md px-3 py-2 sm:flex-1"
-                    type="text"
+                <Input
+                    className="sm:flex-1"
                     placeholder="Search for Jobs"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                 />
-                <input
-                    className="w-full min-w-0 rounded-md px-3 py-2 sm:flex-1"
-                    type="text"
+                <Input
+                    className="sm:flex-1"
                     placeholder="Location"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                 />
-                <button
-                    className="w-full sm:w-auto shrink-0 bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700"
-                    type="submit"
-                >
+                <Button type="submit" className="w-full sm:w-auto">
                     Search
-                </button>
+                </Button>
             </form>
-        </div>
+        </Card>
     )
 }
