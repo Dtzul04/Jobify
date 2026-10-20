@@ -9,7 +9,7 @@ type SearchBarProps = {
     onSearch: (query: string) => void;
 }
 
-// The search bar for the header
+// Collects role + city, builds JSearch query string, calls onSearch on submit.
 export default function SearchBar(props: SearchBarProps) {
     const [search, setSearch] = useState<string>('');
     const [city, setCity] = useState<string>('');

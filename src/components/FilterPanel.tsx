@@ -3,6 +3,7 @@ type FilterPanelProps = {
     onChange: (value: string) => void;
 }
 
+// Employment-type filter; value lives on page.tsx and is sent with searchJobs.
 export default function FilterPanel({ value, onChange }: FilterPanelProps) {
     return (
         <select

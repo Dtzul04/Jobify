@@ -8,7 +8,7 @@ type JobListProps = {
     failed: boolean;
 };
 
-// Displays the list of jobs or a loading state
+// Shows loading, empty, error, or a grid of JobCards; data comes from page.tsx.
 export default function JobList({ jobs, loading, hasSearched, failed }: JobListProps) {
     let content;
 

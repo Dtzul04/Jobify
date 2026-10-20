@@ -14,6 +14,7 @@ export const metadata: Metadata = {
   description: "Search jobs and get plain-language summaries",
 };
 
+// Wraps all pages: font, global styles, and Footer below {children}.
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${poppins.variable} antialiased`}>

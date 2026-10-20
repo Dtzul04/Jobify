@@ -10,6 +10,7 @@ function withFallback(value: string | null | undefined, fallback: string): strin
     return fallback;
 }
 
+// Server-only JSearch call; maps API response to Job[] for the UI.
 export async function jsearch(query: string, employmentType: EmploymentType): Promise<Job[]> {
     let url = `https://jsearch.p.rapidapi.com/search-v2?query=${encodeURIComponent(query)}&page=1&num_pages=1&country=us`;
     if (employmentType !== 'all') {

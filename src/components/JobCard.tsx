@@ -8,10 +8,12 @@ import Card from "@/components/ui/Card";
 
 type JobCardProps = { job: Job };
 
+// One job tile: click card for POST /api/analyze summary; Apply opens listing (no summary).
 export default function JobCard({ job }: JobCardProps) {
     const { loading, failed, error, run } = useAsync();
     const [analysis, setAnalysis] = useState<AIAnalysis | null>(null);
 
+    // One Gemini call per card unless retry after failure.
     async function onCardClick() {
         if (!job.description) {
             return;

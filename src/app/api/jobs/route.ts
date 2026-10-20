@@ -8,6 +8,7 @@ function toEmploymentType(value: string): EmploymentType {
     return TYPES.includes(value as EmploymentType) ? (value as EmploymentType) : 'all';
 }
 
+// GET /api/jobs?query=&employmentType= — validates params, calls jsearch.ts.
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
 

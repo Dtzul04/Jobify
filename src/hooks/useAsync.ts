@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+// Wraps async work with loading, failed, and error (used by page.tsx and JobCard).
 export function useAsync() {
 
     const [failed, setFailed] = useState(false);

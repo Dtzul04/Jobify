@@ -1,5 +1,6 @@
 import type { Job, AIAnalysis } from '@/types';
 
+// Browser helper: GET /api/jobs (server calls JSearch).
 export const searchJobs = async (query: string, employmentType: string): Promise<Job[]> => {
     const url = `/api/jobs?query=${encodeURIComponent(query)}&employmentType=${encodeURIComponent(employmentType)}`;
     const response = await fetch(url);
@@ -9,6 +10,7 @@ export const searchJobs = async (query: string, employmentType: string): Promise
     return (await response.json() as Job[]);
 }
 
+// Browser helper: POST /api/analyze (server calls Gemini).
 export const analyzeJob = async (title: string, description: string): Promise<AIAnalysis> => {
     const response = await fetch('/api/analyze', {
         method: 'POST',

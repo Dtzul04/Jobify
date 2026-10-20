@@ -7,6 +7,7 @@ type HeaderProps = {
     onEmploymentTypeChange: (value: string) => void;
 }
 
+// Home header layout: branding, SearchBar, and FilterPanel (props from page.tsx).
 export default function Header({ onSearch, employmentType, onEmploymentTypeChange }: HeaderProps) {
     return (
         <header className="flex flex-col gap-5 px-4 py-6 text-text md:px-8 md:py-10 lg:flex-row lg:items-center lg:gap-8">

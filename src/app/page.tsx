@@ -2,23 +2,26 @@
 
 import Header from "@/components/Header";
 import JobList from "@/components/JobList";
-import { useState } from "react";
 import type { Job } from "@/types";
+import { useState } from "react";
 import { searchJobs } from "@/lib/fetchJobs";
 import { useAsync } from "@/hooks/useAsync";
 
+// Home page: owns search state, calls /api/jobs via fetchJobs and passes data to Header + JobList.
 export default function Home() {
     const [employmentType, setEmploymentType] = useState('all');
     const [jobs, setJobs] = useState<Job[]>([]);
     const [hasSearched, setHasSearched] = useState(false);
     const { loading, failed, run } = useAsync();
 
+    // Header/SearchBar call this with a query like "Nurse in Dallas"
     async function onSearch(query: string) {
+        // false until first search — JobList uses this for the empty prompt.
         setHasSearched(true);
-        setJobs([])
+        setJobs([]);
         run(async () => {
-            setJobs(await searchJobs(query, employmentType));
-        })
+            setJobs(await searchJobs(query, employmentType))
+        });
     }
 
     return (

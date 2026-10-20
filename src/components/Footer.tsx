@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-// Site-wide footer; wired in root layout.tsx
+// Site-wide footer; rendered from layout.tsx on every page.
 export default function Footer() {
     return(
         <footer className="mt-auto border-t border-emerald-200/80 bg-surface px-4 py-6 text-center text-sm text-text-muted md:px-8">
