@@ -28,3 +28,13 @@ export const analyzeJob = async (title: string, description: string): Promise<AI
 
     return response.json() as Promise<AIAnalysis>;
 }
+
+// Browser helper: GET /api/locations (server looks up many places).
+export const searchLocations = async (query: string, signal?: AbortSignal): Promise<string[]> => {
+    const url = `/api/locations?query=${encodeURIComponent(query)}`;
+    const response = await fetch(url, { signal });
+    if (!response.ok) {
+        throw new Error('Failed to search locations');
+    }
+    return (await response.json()) as string[];
+}
