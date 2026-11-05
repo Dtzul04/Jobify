@@ -6,10 +6,19 @@ type JobListProps = {
     loading: boolean;
     hasSearched: boolean;
     failed: boolean;
+    selectedJobs: Job[];
+    onToggleCompare: (job: Job) => void;
 };
 
 // Shows loading, empty, error, or a grid of JobCards; data comes from page.tsx.
-export default function JobList({ jobs, loading, hasSearched, failed }: JobListProps) {
+export default function JobList({
+    jobs,
+    loading,
+    hasSearched,
+    failed,
+    selectedJobs,
+    onToggleCompare,
+}: JobListProps) {
     let content;
 
     if (loading) {
@@ -43,7 +52,12 @@ export default function JobList({ jobs, loading, hasSearched, failed }: JobListP
         content = (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {jobs.map((job) => (
-                    <JobCard key={job.id} job={job} />
+                    <JobCard
+                        key={job.id}
+                        job={job}
+                        selected={selectedJobs.some((j) => j.id === job.id)}
+                        onToggleCompare={onToggleCompare}
+                    />
                 ))}
             </div>
         );

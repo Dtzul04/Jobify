@@ -6,10 +6,14 @@ import { analyzeJob } from "@/lib/fetchJobs";
 import { useAsync } from "@/hooks/useAsync";
 import Card from "@/components/ui/Card";
 
-type JobCardProps = { job: Job };
+type JobCardProps = {
+    job: Job;
+    selected: boolean;
+    onToggleCompare: (job: Job) => void;
+};
 
 // One job tile: click card for POST /api/analyze summary; Apply opens listing (no summary).
-export default function JobCard({ job }: JobCardProps) {
+export default function JobCard({ job, selected, onToggleCompare }: JobCardProps) {
     const { loading, failed, error, run } = useAsync();
     const [analysis, setAnalysis] = useState<AIAnalysis | null>(null);
 
@@ -102,21 +106,37 @@ export default function JobCard({ job }: JobCardProps) {
                 </div>
             )}
 
-            {job.applyUrl ? (
-                <a
-                    href={job.applyUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    className="mt-auto shrink-0 rounded-md bg-brand px-3 py-2 text-center text-sm font-medium text-white hover:bg-brand-hover"
+            <div className="mt-auto flex shrink-0 flex-col gap-2">
+                <button
+                    type="button"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onToggleCompare(job);
+                    }}
+                    className={`rounded-md px-3 py-2 text-sm font-medium ${
+                        selected
+                            ? "bg-emerald-700 text-white hover:bg-emerald-800"
+                            : "bg-surface-muted text-text hover:bg-emerald-200"
+                    }`}
                 >
-                    Apply
-                </a>
-            ) : (
-                <p className="mt-auto shrink-0 py-2 text-center text-sm text-text-muted">
-                    No link available
-                </p>
-            )}
+                    {selected ? "Selected" : "Compare"}
+                </button>
+                {job.applyUrl ? (
+                    <a
+                        href={job.applyUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="rounded-md bg-brand px-3 py-2 text-center text-sm font-medium text-white hover:bg-brand-hover"
+                    >
+                        Apply
+                    </a>
+                ) : (
+                    <p className="py-2 text-center text-sm text-text-muted">
+                        No link available
+                    </p>
+                )}
+            </div>
         </Card>
     );
 }
