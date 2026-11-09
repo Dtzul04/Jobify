@@ -43,17 +43,13 @@ export default function SearchBar({
     const [suggestions, setSuggestions] = useState<string[]>([]);
     const [lookingUp, setLookingUp] = useState(false);
 
-    // Recent searches
-    const [recents, setRecents] = useState<RecentSearch[]>([]);
+    // Recent searches — lazy init from localStorage (safe on server via getRecentSearches)
+    const [recents, setRecents] = useState<RecentSearch[]>(() => getRecentSearches());
     const [recentOpen, setRecentOpen] = useState(false);
     const [recentIndex, setRecentIndex] = useState(0);
 
     const showLocs = locOpen && city.trim().length > 0;
     const showRecents = recentOpen && recents.length > 0;
-
-    useEffect(() => {
-        setRecents(getRecentSearches());
-    }, []);
 
     useEffect(() => {
         const query = city.trim();
