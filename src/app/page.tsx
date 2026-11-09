@@ -20,15 +20,21 @@ export default function Home() {
     const { loading, failed, run } = useAsync();
     const [compareMessage, setCompareMessage] = useState("");
 
-    // Header/SearchBar call this with a query like "Nurse in Dallas"
-    async function onSearch(query: string) {
+    // Header/SearchBar call this with a query like "Nurse in Dallas".
+    // Optional typeOverride: used when restoring a recent search in the same click
+    // (React state would otherwise still hold the old filter).
+    async function onSearch(query: string, typeOverride?: string) {
+        const type = typeOverride ?? employmentType;
+        if (typeOverride !== undefined) {
+            setEmploymentType(typeOverride);
+        }
         // false until first search — JobList uses this for the empty prompt.
         setHasSearched(true);
         setJobs([]);
         setSelectedJobs([]);
         setCompareMessage("");
         run(async () => {
-            setJobs(await searchJobs(query, employmentType))
+            setJobs(await searchJobs(query, type))
         });
     }
 
