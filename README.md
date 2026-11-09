@@ -29,6 +29,7 @@ SearchBar → Header → page.tsx → GET /api/jobs → jsearch → JobList
 
 - Role + city become one query string (`developer in Miami`).
 - Employment type is a separate query param (`FULLTIME`, `PARTTIME`, `CONTRACTOR`, `INTERN`, or `all`).
+- Successful searches are saved in the browser (`localStorage`) as recent criteria (role, city, filter) — not job results or API keys. Focus the role field to pick one again, or clear the list.
 - Click a card (not Apply) for `POST /api/analyze`.
 - Card summary: `JobCard` -> `POST /api/analyze` -> `gemini.ts` -> summary on the card.
 
@@ -53,9 +54,10 @@ jobify/
 │   │   └── useAsync.ts          # Shared loading/error state for async UI
 │   ├── lib/
 │   │   ├── fetchJobs.ts         # Browser fetch helpers for /api/*
+│   │   ├── RecentSearches.ts    # localStorage recent search history
 │   │   ├── jsearch.ts           # JSearch API call (server only)
 │   │   └── gemini.ts            # Gemini API call (server only)
-│   └── types/                   # Job, JSearchJob, AIAnalysis, EmploymentType
+│   └── types/                   # Job, JSearchJob, AIAnalysis, RecentSearch, EmploymentType
 ├── .env.example
 └── package.json
 ```
@@ -93,6 +95,7 @@ The keys are only read on the server, so they never reach the browser.
 
 - Search by **role** and **city**
 - Filter **employment type**, then Search
+- **Recent searches** on the role field (rerun or clear; stored on this device only, no login)
 - Loading, failed, and empty states
 - Click a **card** for a Gemini summary (skills + salary if the model finds one)
 - **Apply** opens the job without starting a summary

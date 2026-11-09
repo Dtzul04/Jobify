@@ -2,7 +2,7 @@ import SearchBar from "./SearchBar";
 import FilterPanel from "./FilterPanel";
 
 type HeaderProps = {
-    onSearch: (query: string) => void;
+    onSearch: (query: string, typeOverride?: string) => void;
     employmentType: string;
     onEmploymentTypeChange: (value: string) => void;
 }
@@ -18,7 +18,11 @@ export default function Header({ onSearch, employmentType, onEmploymentTypeChang
                 </p>
             </div>
             <div className="w-full min-w-0 lg:flex-1">
-                <SearchBar onSearch={onSearch} />
+                <SearchBar
+                    onSearch={onSearch}
+                    employmentType={employmentType}
+                    onEmploymentTypeChange={onEmploymentTypeChange}
+                />
             </div>
             <div className="w-full lg:w-auto lg:shrink-0">
                 <FilterPanel value={employmentType} onChange={onEmploymentTypeChange} />

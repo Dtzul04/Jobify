@@ -27,3 +27,9 @@ export interface AIAnalysis {
 }
 
 export type EmploymentType = 'all' | 'FULLTIME' | 'PARTTIME' | 'CONTRACTOR' | 'INTERN';
+
+export interface RecentSearch {
+    role: string;
+    city: string;
+    employmentType: EmploymentType;
+}
